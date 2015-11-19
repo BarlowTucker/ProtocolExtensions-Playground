@@ -2,7 +2,7 @@
 //: **Barlow Tucker** - @barlow_tucker
 
 import Foundation
-
+import UIKit
 
 //
 protocol TheProtocol {
@@ -32,6 +32,12 @@ extension TheProtocol {
     }
 }
 
+extension TheProtocol where Self: CustomStringConvertible {
+    func toString() -> String {
+        return self.description
+    }
+}
+
 class TheClass: TheProtocol {
     func funcOne() -> String {
         return "funcOne was called from TheClass"
@@ -43,7 +49,11 @@ class TheClass: TheProtocol {
 }
 
 struct TheStruct: TheProtocol {
+    
+}
 
+extension Bool: TheProtocol {
+    
 }
 
 let classOne = TheClass()
@@ -55,5 +65,8 @@ let classTwo:TheProtocol = TheClass()
 print(classTwo.funcOne())
 print(classTwo.funcTwo())
 print(classTwo.funcThree())
+
+let foo:Bool  = false
+foo.toString()
 
 //: [Next](@next)

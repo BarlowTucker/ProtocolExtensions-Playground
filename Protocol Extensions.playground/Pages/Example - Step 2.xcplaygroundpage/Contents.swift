@@ -2,35 +2,44 @@
 //
 import UIKit
 
-public protocol ParsableTwo {
-    typealias ParsableType = Self
-
+//MARK: - Protocols
+protocol ParsableTwo {
     init(json:JSON)
-//    static func array(json:JSON) -> [ParsableType]
 }
 
+protocol Searchable {
+    static func search(term:String) -> [Self]
+}
+
+//MARK: - Extensions
 extension ParsableTwo {
     static func array(json:JSON!) -> [Self] {
         var jsonObject:[JSON] = []
-
+        
         if let json = json.array {
             jsonObject = json
         } else {
             jsonObject = [json]
         }
-
+        
         var array: [Self] = []
-
+        
         for json:JSON in jsonObject {
             let foobar = Self.init(json:json)
             array.append(foobar)
         }
-
+        
         return  array
     }
 }
 
-class Foobar:ParsableTwo {
+extension Searchable where Self: ParsableTwo {
+    static func search(term:String) -> [Self] {
+        return Self.array(NetworkStuff.request(["action":"search", "term":term]))
+    }
+}
+
+final class Foobar:ParsableTwo, Searchable {
     let ID:String?
     let foo:String?
     let bar:String?
@@ -39,10 +48,6 @@ class Foobar:ParsableTwo {
         self.ID = json["ID"].string
         self.foo = json["foo"].string
         self.bar = json["bar"].string
-    }
-    
-    class func search(term:String) -> [Foobar] {
-        return Foobar.array(NetworkStuff.request(["action":"search", "term":term]))
     }
 }
 
